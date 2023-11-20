@@ -1,0 +1,117 @@
+import { users } from "../models/users.js"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import ErrorHandler from "../middlewares/err.js"
+
+export const getAllusers = async (req, res, next) => {
+    try {
+        const usersCollection = await users.find({})
+        res.status(200).json({
+            success: true,
+            users: usersCollection
+        })
+    } catch (error) {
+        next(new ErrorHandler(error))
+    }
+}
+
+export const login = async (req, res, next) => {
+    const { email, password } = req.body;
+    const isData = email && password
+    try {
+        if (!isData) {
+            return next(new ErrorHandler("Insufficient Data", 400))
+        }
+        const user = await users.findOne({ email }).select("+password");
+        if (!user) {
+            return next(new ErrorHandler("User not registered", 401))
+        }
+        const isMatched = await bcrypt.compare(password,user.password)
+        if (!isMatched) {
+            return next(new ErrorHandler("Invalid Password", 401))
+        }
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
+        res
+            .cookie("token", token, {
+                httpOnly: true,
+                maxAge : 5 * 60 * 1000,
+                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+                secure : process.env.NODE_ENV === "Development" ? false : true
+            })
+            .status(200).json({
+                success: true,
+                message: "Logged in successfully"
+            })
+    } catch (error) {
+        next(new ErrorHandler(error))
+    }
+}
+
+export const createUser = async (req, res, next) => {
+    const { name, email, password } = req.body
+    const isData = name && email && password
+    try {
+        if (!isData) {
+            return next(new ErrorHandler("Insufficient Data", 400))
+        }
+        let user = await users.findOne({ email })
+        if (user) {
+            return res.status(405).json({
+                success: false,
+                message: "User already exists"
+            })
+        }
+        const hashedPassword = await bcrypt.hash(password, 10)
+        user = await users.create({
+            name,
+            password: hashedPassword,
+            email
+        })
+
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
+
+        res
+            .cookie("token", token, {
+                httpOnly: true,
+                maxAge : 5 * 60 * 1000,
+                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+                secure : process.env.NODE_ENV === "Development" ? false : true
+            })
+            .status(200).json({
+                success: true,
+                message: "User registered successfully"
+            })
+    } catch (error) {
+        next(new ErrorHandler(error))
+    }
+}
+
+export const getUser = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const user = await users.findById(id)
+        res.json({
+            success: true,
+            user
+        })
+    } catch (error) {
+        return next(new ErrorHandler(error))
+    }
+}
+
+export const getMe = (req, res) => {
+    res.json({
+        success: true,
+        user: req.user
+    })
+}
+
+export const logout = (req, res) => {
+    res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(Date.now())
+    }).json({
+        success: true,
+        message: "Logged out"
+    })
+}
