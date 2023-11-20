@@ -25,4 +25,4 @@ const userSchema = new mongoose.Schema({
 })
 
 //Creating collection
-export const users = mongoose.model("users",userSchema)
+export const users = mongoose.model("BlogUser",userSchema)
