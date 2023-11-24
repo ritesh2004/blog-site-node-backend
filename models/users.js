@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 
 //Creating schema
 const userSchema = new mongoose.Schema({
+    username : {
+        type : String,
+        required : true,
+        unique : true
+    },
     name : {
         type:String,
         required:true,
@@ -17,6 +22,9 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true,
         select:false
+    },
+    profileURL : {
+        type : String
     },
     createdAt : {
         type: Date,
