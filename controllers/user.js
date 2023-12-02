@@ -48,7 +48,7 @@ export const login = async (req, res, next) => {
 }
 
 export const createUser = async (req, res, next) => {
-    const { name, email, password,username,profileURL } = req.body
+    const { name, email, password,username,profileURL,bio } = req.body
     const isData = name && email && password
     try {
         if (!isData) {
@@ -67,7 +67,8 @@ export const createUser = async (req, res, next) => {
             name,
             password: hashedPassword,
             email,
-            profileURL
+            profileURL,
+            bio
         })
 
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
@@ -116,4 +117,20 @@ export const logout = (req, res) => {
         success: true,
         message: "Logged out"
     })
+}
+
+export const updateUser = async (req,res,next) => {
+    const { bio } = req.body;
+    const { id } = req.params;
+    try {
+        const resp = await users.findByIdAndUpdate(id,{
+            bio
+        })
+        res.json({
+            success : true,
+            message : "Profile updated"
+        })
+    } catch (error) {
+        return next(new ErrorHandler(error))
+    }
 }

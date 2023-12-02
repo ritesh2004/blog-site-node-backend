@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     profileURL : {
         type : String
     },
+    bio : {
+        type : String,
+        default : '-'
+    },
     createdAt : {
         type: Date,
         default : Date.now
