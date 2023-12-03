@@ -13,9 +13,9 @@ router.get("/blog/:id",isAuthenticated,getBlog)
 
 router.post("/blog/add",isAuthenticated,uploadBlog)
 
-router.put("/blog/:id",isAuthenticated,updateBlog)
+router.post("/blog/edit/:id",isAuthenticated,updateBlog)
 
-router.delete("/blog/:id",isAuthenticated,deleteBlog)
+router.get("/blog/delete/:id",isAuthenticated,deleteBlog)
 
 
 export default router
