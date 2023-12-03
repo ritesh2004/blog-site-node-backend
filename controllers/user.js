@@ -76,7 +76,7 @@ export const createUser = async (req, res, next) => {
         res
             .cookie("token", token, {
                 httpOnly: true,
-                maxAge : 5 * 60 * 1000,
+                maxAge : 60 * 24 * 7 * 60 * 1000,
                 sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
                 secure : process.env.NODE_ENV === "Development" ? false : true
             })
