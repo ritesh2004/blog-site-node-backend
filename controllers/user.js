@@ -34,7 +34,7 @@ export const login = async (req, res, next) => {
         res
             .cookie("token", token, {
                 httpOnly: true,
-                maxAge : 5 * 60 * 1000,
+                maxAge : 60 * 24 * 7 * 60 * 1000,
                 sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
                 secure : process.env.NODE_ENV === "Development" ? false : true
             })
@@ -112,7 +112,9 @@ export const getMe = (req, res) => {
 export const logout = (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
-        expires: new Date(Date.now())
+        maxAge: new Date(Date.now()),
+        sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+        secure : process.env.NODE_ENV === "Development" ? false : true
     }).json({
         success: true,
         message: "Logged out"

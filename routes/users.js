@@ -8,7 +8,7 @@ router.get('/users/all',getAllusers)
 
 router.get('/user/:id',getUser)
 
-router.post('/user/logout',logout)
+router.post('/user/logout',isAuthenticated,logout)
 
 router.post('/user/add',createUser)
 
