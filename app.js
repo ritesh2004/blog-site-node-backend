@@ -21,6 +21,8 @@ app.use(cors({
     credentials : true
 }))
 
+app.use(express.static('build'))
+
 app.use("/api/v1/",userRouter)
 
 app.use("/api/v1/",blogRouter)
