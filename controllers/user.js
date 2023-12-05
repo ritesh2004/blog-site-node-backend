@@ -31,6 +31,7 @@ export const login = async (req, res, next) => {
             return next(new ErrorHandler("Invalid Password", 401))
         }
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
+        res.header("Access-Control-Allow-Origin",process.env.FRONTEND_URL)
         res
             .cookie("token", token, {
                 httpOnly: true,
