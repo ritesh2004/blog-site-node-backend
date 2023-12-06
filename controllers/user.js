@@ -36,7 +36,7 @@ export const login = async (req, res, next) => {
             .cookie("token", token, {
                 httpOnly: true,
                 maxAge : 60 * 24 * 7 * 60 * 1000,
-                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+                sameSite : "lax",
                 secure : process.env.NODE_ENV === "Development" ? false : true
             })
             .status(200).json({
@@ -78,7 +78,7 @@ export const createUser = async (req, res, next) => {
             .cookie("token", token, {
                 httpOnly: true,
                 maxAge : 60 * 24 * 7 * 60 * 1000,
-                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+                sameSite : "lax",
                 secure : process.env.NODE_ENV === "Development" ? false : true
             })
             .status(200).json({
@@ -114,7 +114,7 @@ export const logout = (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
         maxAge: new Date(Date.now()),
-        sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+        sameSite : "lax",
         secure : process.env.NODE_ENV === "Development" ? false : true
     }).json({
         success: true,
