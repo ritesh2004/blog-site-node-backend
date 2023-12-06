@@ -4,7 +4,6 @@ import { blogs } from "../models/blogs.js";
 export const getAllblogs = async (req, res, next) => {
     try {
         const allBlogs = await blogs.find({})
-        res.header('Access-Control-Allow-Origin',"*")
         res.status(200).json({
             success: true,
             blog: allBlogs
@@ -17,7 +16,6 @@ export const getAllblogs = async (req, res, next) => {
 export const getMyblogs = async (req, res, next) => {
     try {
         const myBlogs = await blogs.find({ user: req.user._id })
-        res.header('Access-Control-Allow-Origin',"*")
         res.status(200).json({
             success: true,
             blog: myBlogs
@@ -31,7 +29,6 @@ export const getBlog = async (req, res, next) => {
     const { id } = req.params
     try {
         const blog = await blogs.find({ _id: id })
-        res.header('Access-Control-Allow-Origin',"*")
         res.json({
             success: true,
             blog
@@ -45,7 +42,6 @@ export const uploadBlog = async (req, res, next) => {
     const { title, description, imageURL } = req.body
     try {
         await blogs.create({ title, description, imageURL, user: req.user })
-        res.header('Access-Control-Allow-Origin',"*")
         res.json({
             message: "Blog created"
         })
@@ -63,7 +59,6 @@ export const updateBlog = async (req, res, next) => {
             description,
             imageURL
         })
-        res.header('Access-Control-Allow-Origin',"*")
         res.json({
             message: "Blog updated"
         })
@@ -77,7 +72,6 @@ export const deleteBlog = async (req, res, next) => {
     const { id } = req.params;
     try {
         await blogs.findByIdAndDelete(id)
-        res.header('Access-Control-Allow-Origin',"*")
         res.json({
             success: true,
             message: "Blog deleted"
