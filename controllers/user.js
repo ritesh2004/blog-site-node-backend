@@ -6,6 +6,7 @@ import ErrorHandler from "../middlewares/err.js"
 export const getAllusers = async (req, res, next) => {
     try {
         const usersCollection = await users.find({})
+        res.header('Access-Control-Allow-Origin',"*")
         res.status(200).json({
             success: true,
             users: usersCollection
@@ -31,12 +32,12 @@ export const login = async (req, res, next) => {
             return next(new ErrorHandler("Invalid Password", 401))
         }
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
-        res.header("Access-Control-Allow-Origin",process.env.FRONTEND_URL)
+        res.header('Access-Control-Allow-Origin',"*")
         res
             .cookie("token", token, {
                 httpOnly: true,
                 maxAge : 60 * 24 * 7 * 60 * 1000,
-                sameSite : "lax",
+                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
                 secure : process.env.NODE_ENV === "Development" ? false : true
             })
             .status(200).json({
@@ -57,6 +58,7 @@ export const createUser = async (req, res, next) => {
         }
         let user = await users.findOne({ email })
         if (user) {
+        res.header('Access-Control-Allow-Origin',"*")
             return res.status(405).json({
                 success: false,
                 message: "User already exists"
@@ -73,12 +75,12 @@ export const createUser = async (req, res, next) => {
         })
 
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
-
+        res.header('Access-Control-Allow-Origin',"*")
         res
             .cookie("token", token, {
                 httpOnly: true,
                 maxAge : 60 * 24 * 7 * 60 * 1000,
-                sameSite : "lax",
+                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
                 secure : process.env.NODE_ENV === "Development" ? false : true
             })
             .status(200).json({
@@ -94,6 +96,7 @@ export const getUser = async (req, res, next) => {
     const { id } = req.params;
     try {
         const user = await users.findById(id)
+        res.header('Access-Control-Allow-Origin',"*")
         res.json({
             success: true,
             user
@@ -104,6 +107,7 @@ export const getUser = async (req, res, next) => {
 }
 
 export const getMe = (req, res) => {
+    res.header('Access-Control-Allow-Origin','*')
     res.json({
         success: true,
         user: req.user
@@ -111,10 +115,11 @@ export const getMe = (req, res) => {
 }
 
 export const logout = (req, res) => {
+    res.header('Access-Control-Allow-Origin',"*")
     res.cookie("token", "", {
         httpOnly: true,
         maxAge: new Date(Date.now()),
-        sameSite : "lax",
+        sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
         secure : process.env.NODE_ENV === "Development" ? false : true
     }).json({
         success: true,
@@ -129,6 +134,7 @@ export const updateUser = async (req,res,next) => {
         const resp = await users.findByIdAndUpdate(id,{
             bio
         })
+        res.header('Access-Control-Allow-Origin',"*")
         res.json({
             success : true,
             message : "Profile updated"
