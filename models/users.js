@@ -10,8 +10,7 @@ const userSchema = new mongoose.Schema({
     },
     name : {
         type:String,
-        required:true,
-        unique:true
+        required:true
     },
     email : {
         type:String,
@@ -29,6 +28,10 @@ const userSchema = new mongoose.Schema({
     bio : {
         type : String,
         default : '-'
+    },
+    provider : {
+        type : String,
+        require : true
     },
     createdAt : {
         type: Date,
