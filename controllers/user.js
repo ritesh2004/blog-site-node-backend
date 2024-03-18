@@ -69,7 +69,8 @@ export const createUser = async (req, res, next) => {
             password: hashedPassword,
             email,
             profileURL,
-            bio
+            bio,
+            provider : 'email/password'
         })
 
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
