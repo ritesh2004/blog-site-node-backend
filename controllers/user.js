@@ -137,3 +137,44 @@ export const updateUser = async (req,res,next) => {
         return next(new ErrorHandler(error))
     }
 }
+
+// Function for handling sign up with google
+export const googleSignup = async (req, res, next) => {
+    const { name, email,username,profileURL,bio } = req.body
+    const isData = name && email
+    try {
+        if (!isData) {
+            return next(new ErrorHandler("Insufficient Data", 400))
+        }
+        let user = await users.findOne({ email })
+        if (user) {
+            return res.status(405).json({
+                success: false,
+                message: "User already exists"
+            })
+        }
+        user = await users.create({
+            username,
+            name,
+            email,
+            profileURL,
+            bio,
+            provider : 'google'
+        })
+
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
+        res
+            .cookie("token", token, {
+                httpOnly: true,
+                maxAge : 60 * 24 * 7 * 60 * 1000,
+                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+                secure : process.env.NODE_ENV === "Development" ? false : true
+            })
+            .status(200).json({
+                success: true,
+                message: "User registered successfully"
+            })
+    } catch (error) {
+        next(new ErrorHandler(error))
+    }
+}
