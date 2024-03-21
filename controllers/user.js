@@ -178,3 +178,31 @@ export const googleSignup = async (req, res, next) => {
         next(new ErrorHandler(error))
     }
 }
+
+// Sign in with Google 
+export const googleLogin = async (req, res, next) => {
+    const { email } = req.body;
+    try {
+        if (!email) {
+            return next(new ErrorHandler("Insufficient Data", 400))
+        }
+        const user = await users.findOne({ email });
+        if (!user) {
+            return next(new ErrorHandler("User not registered", 401))
+        }
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET)
+        res
+            .cookie("token", token, {
+                httpOnly: true,
+                maxAge : 60 * 24 * 7 * 60 * 1000,
+                sameSite : process.env.NODE_ENV === "Development" ? "lax" : "none",
+                secure : process.env.NODE_ENV === "Development" ? false : true
+            })
+            .status(200).json({
+                success: true,
+                message: "Logged in successfully"
+            })
+    } catch (error) {
+        next(new ErrorHandler(error))
+    }
+}
