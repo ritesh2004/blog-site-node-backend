@@ -124,11 +124,12 @@ export const logout = (req, res) => {
 }
 
 export const updateUser = async (req,res,next) => {
-    const { bio } = req.body;
+    const { bio,username } = req.body;
     const { id } = req.params;
     try {
         const resp = await users.findByIdAndUpdate(id,{
-            bio
+            bio,
+            username
         })
         res.json({
             success : true,
