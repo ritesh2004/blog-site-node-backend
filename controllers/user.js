@@ -142,7 +142,7 @@ export const updateUser = async (req,res,next) => {
 
 // Function for handling sign up with google
 export const googleSignup = async (req, res, next) => {
-    const { name, email,profileURL,bio,username } = req.body
+    let { name, email,profileURL,bio,username } = req.body
     const isData = name && email
     try {
         if (!isData) {
