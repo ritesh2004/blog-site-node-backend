@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     username : {
         type : String,
-        required : true,
+        required : [true,"username must be unique"],
         unique : true
     },
     name : {
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     },
     email : {
         type:String,
-        required:true,
+        required:[true,"email id must be unique"],
         unique:true
     },
     password : {
@@ -31,10 +31,6 @@ const userSchema = new mongoose.Schema({
     provider : {
         type : String,
         require : true
-    },
-    createdAt : {
-        type: Date,
-        default : Date.now
     }
 },{timestamps : true})
 
