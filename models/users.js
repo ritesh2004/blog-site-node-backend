@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default : Date.now
     }
-})
+},{timestamps : true})
 
 //Creating collection
 export const users = mongoose.model("BlogUser",userSchema)

@@ -2,6 +2,7 @@ import { users } from "../models/users.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import ErrorHandler from "../middlewares/err.js"
+import { generateFromEmail,generateUsername } from "unique-username-generator"
 
 export const getAllusers = async (req, res, next) => {
     try {
@@ -140,7 +141,7 @@ export const updateUser = async (req,res,next) => {
 
 // Function for handling sign up with google
 export const googleSignup = async (req, res, next) => {
-    const { name, email,username,profileURL,bio } = req.body
+    const { name, email,profileURL,bio,username } = req.body
     const isData = name && email
     try {
         if (!isData) {
@@ -152,6 +153,9 @@ export const googleSignup = async (req, res, next) => {
                 success: false,
                 message: "User already exists"
             })
+        }
+        if (!username){
+            username = generateFromEmail(email,4);
         }
         user = await users.create({
             username,
